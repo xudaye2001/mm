@@ -19,10 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class bookServiceImplTest {
     @Autowired
     private BookRepostory bookRepostory;
-    @Autowired
-    private AuthorRepostory authorRepostory;
-    @Autowired
-    private PublisherRepostory publisherRepostory;
+//    @Autowired
+//    private AuthorRepostory authorRepostory;
+//    @Autowired
+//    private PublisherRepostory publisherRepostory;
 
     @Test
     public void testSaveBook(){
