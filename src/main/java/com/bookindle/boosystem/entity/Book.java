@@ -14,59 +14,62 @@ import java.util.Date;
 @Entity
 @Table(name = "book")
 public class Book {
+    @Column(nullable = true)
+    private String pubdate;
+
+    @Column(nullable = true)
+    private String produce;
+
+    @Column(nullable = true)
+    private String page;
+
+    @Column(nullable = true)
+    private String price;
+
+    @Column(nullable = true)
+    private String format;
+
+    @Column(nullable = true)
+    private String img;
+
+
+    @Column(nullable = true)
+    private String paper;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = true)
     @Size(max = 50)
-    private String originTitle;
-
-    @Column(nullable = true)
-    private String pubdata;
-
-
-    @Column(nullable = true)
-    @Size(max = 50)
-    private String banding;
-
-    @Column(nullable = true)
-    @Size(max = 50)
-    private String translator;
+    private String binding;
 
     @Column(nullable = true, length = 200)
     private String image;
 
-    @Column(nullable = false)
-    @NotEmpty(message = "ISBN不能为空")
-    private String isbn13;
+    @Column(nullable = true)
+//    @NotEmpty(message = "ISBN不能为空")
+    private String isbn;
 
-    @Column(nullable = false)
-    @NotEmpty(message = "标题不能为空")
+    @Column(nullable = true)
+//    @NotEmpty(message = "标题不能为空")
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Size(min = 2)
-    private String summary;
+    @Size(max = 1000)
+    private String gist;
+
+    @NotEmpty(message = "作者不能为空")
+    @Size(min = 2, max = 50)
+    private String author;
+
+//    @Size(min = 2, max = 50)
+//    @NotEmpty(message = "出版社不能为空")
+    @Column(nullable = true)
+    private String publisher;
 
 
-    @OneToOne(cascade = CascadeType.ALL, targetEntity = Author.class)
-    @JoinColumn(name = "author_id")
-    private Author author;
 
-    @OneToOne(cascade = CascadeType.ALL, targetEntity = Publisher.class)
-    @JoinColumn(name = "publisher_id")
-    private Publisher publisher;
-
-    public Book(Book book) {
-        this.isbn13 = book.isbn13;
-        this.title = book.title;
-        this.summary = book.summary;
-        this.author = book.author;
-        this.publisher = book.publisher;
-    }
-
-    public Book() { }
 }

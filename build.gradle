@@ -4,6 +4,12 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'war'
+war {
+    baseName = 'booksystem'
+    version = '1.0.0-demo'
+}
+
 group = 'com.bookindle'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
@@ -20,9 +26,15 @@ configurations {
 
 repositories {
     mavenCentral()
+    flatDir{ dirs 'libs'}
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/com.showapi.javasdk/com.showapi.javasdk
+    compile group: 'com.showapi.javasdk', name: 'com.showapi.javasdk', version: '0.0.1'
+
+    // https://mvnrepository.com/artifact/com.alibaba/fastjson
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.66'
 
 
     // commons-lang3
