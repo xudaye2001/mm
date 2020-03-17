@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
  * @data 3/5/2019 8:52 PM
  */
 @RestController
-@RequestMapping("/jwt/tasks")
+@RequestMapping("/restful/tasks")
 public class TaskController {
 
     @GetMapping

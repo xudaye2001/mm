@@ -23,14 +23,14 @@ import java.util.List;
  * @description
  */
 @RestController
-@RequestMapping("jwt")
+@RequestMapping("restful")
 public class JwtUserController extends BaseController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
 
-    @RequestMapping(value = "/register/mobile", method = RequestMethod.POST)
+    @RequestMapping(value = "/register/", method = RequestMethod.POST)
     public Response regist(User user) {
         try {
             User userName = userRepository.findByName(user.getName());

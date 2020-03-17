@@ -37,7 +37,8 @@ public class DateUtils {
         if (date == null) {
             return null;
         }
-        long diff = new Date().getTime() - date;
+        long diff = System.currentTimeMillis() - date;
+//        long diff = new Date().getTime() - date;
         long r = 0;
         if (diff > year) {
             r = (diff / year);

@@ -39,9 +39,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/jwt/**").
+            http.antMatcher("/restful/**").
                     //指定登录认证的Controller
-                            formLogin().usernameParameter("name").passwordParameter("password").loginPage("/jwt/login").successHandler(
+                            formLogin().usernameParameter("name").passwordParameter("password").loginPage("/restful/login").successHandler(
                     jwtAuthenticationSuccessHandler).failureHandler(jwtAuthenticationFailHander)
                     .and()
                     .authorizeRequests()
@@ -49,14 +49,14 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
                     .antMatchers("/register/mobile").permitAll()
                     .antMatchers("/article/**").authenticated()
                    .antMatchers("/tasks/**").hasRole("USER")
-                    //.antMatchers(HttpMethod.POST, "/jwt/tasks/**").hasRole("USER")
+                    //.antMatchers(HttpMethod.POST, "/restful/tasks/**").hasRole("USER")
                     .and()//.addFilter(new JWTAuthenticationFilter(authenticationManager()))
                     .addFilter(new JWTAuthorizationFilter(authenticationManager()));
 
 
             http.logout().permitAll();
 
-            http.cors().and().csrf().ignoringAntMatchers("/jwt/**");
+            http.cors().and().csrf().ignoringAntMatchers("/restful/**");
 
         }
 

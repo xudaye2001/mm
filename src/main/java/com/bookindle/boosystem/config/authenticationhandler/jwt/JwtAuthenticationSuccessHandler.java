@@ -46,6 +46,7 @@ public class JwtAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
             // 但是这里创建的token只是单纯的token
             // 按照jwt的规定，最后请求的时候应该是 `Bearer token`
 
+            httpServletResponse.setHeader("Access-Control-Expose-Headers", "token");
             httpServletResponse.setHeader("token", JwtTokenUtils.TOKEN_PREFIX + token);
             httpServletResponse.setContentType("application/json;charset=utf-8");
             PrintWriter out = httpServletResponse.getWriter();
