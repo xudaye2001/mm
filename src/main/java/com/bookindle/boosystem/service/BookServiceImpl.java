@@ -1,6 +1,6 @@
 package com.bookindle.boosystem.service;
 
-import com.bookindle.boosystem.entity.Book;
+import com.bookindle.boosystem.entity.book.Book;
 import com.bookindle.boosystem.repository.BookRepostory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

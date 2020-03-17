@@ -1,7 +1,7 @@
 //package com.bookindle.boosystem.controller;
 //
 //import com.bookindle.boosystem.entity.Author;
-//import com.bookindle.boosystem.entity.Book;
+//import com.bookindle.boosystem.entity.book.Book;
 //import com.bookindle.boosystem.entity.Publisher;
 //import org.junit.Before;
 //import org.junit.Test;

@@ -2,7 +2,7 @@
 //
 //
 //import com.bookindle.boosystem.entity.Author;
-//import com.bookindle.boosystem.entity.Book;
+//import com.bookindle.boosystem.entity.book.Book;
 //import com.bookindle.boosystem.entity.Publisher;
 //import com.bookindle.boosystem.repository.AuthorRepostory;
 //import com.bookindle.boosystem.repository.BookRepostory;

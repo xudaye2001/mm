@@ -1,6 +1,6 @@
 package com.bookindle.boosystem.service;
 
-import com.bookindle.boosystem.entity.Book;
+import com.bookindle.boosystem.entity.book.Book;
 
 import java.util.List;
 import java.util.Optional;
