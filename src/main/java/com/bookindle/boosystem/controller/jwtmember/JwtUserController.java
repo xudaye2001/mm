@@ -30,7 +30,7 @@ public class JwtUserController extends BaseController {
     @Autowired
     private UserRoleRepository userRoleRepository;
 
-    @RequestMapping(value = "/register/", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Response regist(User user) {
         try {
             User userName = userRepository.findByName(user.getName());
