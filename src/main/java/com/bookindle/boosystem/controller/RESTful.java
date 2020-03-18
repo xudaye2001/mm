@@ -2,10 +2,14 @@ package com.bookindle.boosystem.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bookindle.boosystem.entity.book.Book;
+import com.bookindle.boosystem.entity.user.User;
 import com.bookindle.boosystem.repository.BookRepostory;
 
+import com.bookindle.boosystem.repository.member.UserRepository;
 import com.show.api.ShowApiRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +20,9 @@ import java.util.List;
 public class RESTful {
     @Autowired
     private BookRepostory bookRepostory;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * 获取图书列表
@@ -56,9 +63,13 @@ public class RESTful {
      * 添加图书
      * @param rev
      */
+    @PreAuthorize("hasRole('USER')")
     @RequestMapping(value = "/addbook", method = RequestMethod.POST)
     public void addBook(@RequestBody JSONObject rev) {
         Book book = JSONObject.parseObject(String.valueOf(rev), Book.class);
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByName(userName);
+        book.setUser((List<User>) user);
         bookRepostory.save(book);
     }
 }

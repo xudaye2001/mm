@@ -1,11 +1,14 @@
 package com.bookindle.boosystem.entity.book;
 
+import com.bookindle.boosystem.entity.user.User;
+import com.bookindle.boosystem.entity.user.UserRole;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author xxf
@@ -70,6 +73,10 @@ public class Book {
     @Column(nullable = true)
     private String publisher;
 
+    @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+//    private List<UserRole> roles;
+    private List<User> ownners;
 
-
+    public void setUser(List<User> user) {
+    }
 }
