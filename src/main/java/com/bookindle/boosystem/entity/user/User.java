@@ -68,6 +68,7 @@ public class User implements UserDetails {
 
 
 
+
     //获取当前用户实例的password
     @Override
     public String getPassword() {

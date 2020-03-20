@@ -31,6 +31,10 @@ public class TaskController {
         return "任务列表";
     }
 
+    /**
+     * 获取用户名
+     * @return
+     */
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public String newTasks(){
@@ -54,8 +58,9 @@ public class TaskController {
     public void addBook(@RequestBody JSONObject rev) {
         Book book = JSONObject.parseObject(String.valueOf(rev), Book.class);
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByName(userName);
         List<User> owner = new ArrayList<>();
-        owner.add(userRepository.findByName(userName));
+        owner.add(user);
         book.setOwnners(owner);
         bookRepostory.save(book);
     }
