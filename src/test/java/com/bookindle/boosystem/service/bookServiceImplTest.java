@@ -5,7 +5,7 @@
 //import com.bookindle.boosystem.entity.book.Book;
 //import com.bookindle.boosystem.entity.Publisher;
 //import com.bookindle.boosystem.repository.AuthorRepostory;
-//import com.bookindle.boosystem.repository.BookRepostory;
+//import com.bookindle.boosystem.repository.book.BookRepostory;
 //import com.bookindle.boosystem.repository.PublisherRepostory;
 //import com.bookindle.boosystem.service.AuthorServiceImpl;
 //import org.junit.Test;

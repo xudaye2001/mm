@@ -3,14 +3,15 @@ package com.bookindle.boosystem.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.bookindle.boosystem.entity.book.Book;
 
-import com.bookindle.boosystem.repository.BookRepostory;
-import com.bookindle.boosystem.service.BookService;
+import com.bookindle.boosystem.repository.book.BookRepostory;
+import com.bookindle.boosystem.service.book.BookService;
 import com.show.api.ShowApiRequest;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @CrossOrigin
@@ -22,6 +23,9 @@ public class RESTful {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
 
     /**
      * 获取图书列表
@@ -59,7 +63,20 @@ public class RESTful {
     }
 
     @GetMapping(value = "/bookdetails/{id}")
-    public Optional<Book> getBookDetails(@PathVariable("id") Long id) {
-        return bookService.getBookById(id);
+    public Book getBookDetails(
+            @PathVariable("id") Long id
+    ) {
+        Book book = bookService.findBookById(id);
+//        long view = book.getView();
+//        if (view > 0 ) {
+//            //val +1
+//            stringRedisTemplate.boundValueOps("book_fid").increment(book.getView() + 1);
+//        } else {//val +1
+//            stringRedisTemplate.boundValueOps("view::" + id).increment(1);
+//        }
+//        String newView = stringRedisTemplate.opsForValue().get("view::" + id);
+//
+//        book.setView(Long.parseLong(newView));
+        return book;
     }
 }

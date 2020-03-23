@@ -1,12 +1,15 @@
 package com.bookindle.boosystem.entity.book;
 
+import com.bookindle.boosystem.entity.BaseEntity;
 import com.bookindle.boosystem.entity.user.User;
 import com.bookindle.boosystem.entity.user.UserRole;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +19,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "book")
-public class Book {
+public class Book extends BaseEntity implements Serializable {
     @Column(nullable = true)
     private String pubdate;
 
@@ -73,8 +76,11 @@ public class Book {
     @Column(nullable = true)
     private String publisher;
 
+//    @Column(nullable = true)
+//    @ColumnDefault("0")
+//    private long view = 0;
+
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-//    private List<UserRole> roles;
     private List<User> ownners;
 
     public void setUser(List<User> user) {
