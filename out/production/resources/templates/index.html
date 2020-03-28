@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<head>
+    <meta charset="UTF-8">
+    <title>addbook</title>
+</head>
+<body>
+<div>
+
+</div>
+    <table>
+        <thead>
+        <th>title</th>
+        <th>author</th>
+        <th>isbn</th>
+        <th>publisher</th>
+        </thead>
+
+        <tbody th:each="book:${booklist}">
+        <td th:text="${book.getTitle()}">行内</td>
+        <td th:text="${book.getAuthor()}">行内</td>
+        <td th:text="${book.getPublisher()}">行内</td>
+        <td th:text="${book.getIsbn()}">行内</td>
+        </tbody>
+
+    </table>
+<div>
+
+</div>
+
+<div >
+    <form th:action="@{~/addbook}" method="post">
+        <h2>请输入图书信息</h2>
+        <input type="text" name="title" placeholder="书名">
+        <input type="text" name="isbn" placeholder="isbn">
+        <input type="text" name="author" placeholder="作者">
+        <input type="text" name="publisher" placeholder="出版社">
+        <button type="submit">登录</button>
+    </form>
+</div>
+</body>
+</html>
