@@ -29,6 +29,9 @@ public class City {
     @Column(unique = true,nullable = false)
     private String city;
 
+//    @Column(nullable = true)
+//    private String Msg;
+
     @JsonBackReference
     @Fetch(FetchMode.SUBSELECT)
     @ManyToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)

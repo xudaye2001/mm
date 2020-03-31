@@ -71,8 +71,4 @@ public class RESTful {
         return book;
     }
 
-    @PostMapping(value = "/getallcitys")
-    public JSONObject getAllCitys() {
-
-    }
 }

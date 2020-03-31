@@ -84,10 +84,40 @@ public class TaskController {
         bookRepostory.save(book);
     }
 
-    @RequestMapping(value = "/addcity", method = RequestMethod.PATCH)
-    public void addCity(@RequestBody JSONObject addCity) {
+    @RequestMapping(value = "/deletedcity", method = RequestMethod.POST)
+    public void deletedCity(@RequestBody JSONObject cityListNew) {
+        // 获取用户名及请求城市
         String originUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-        String originCityName = addCity.getString("city");
+        String originCityName = cityListNew.getString("city");;
+        // 查找用户User和CIty
+        User originUser = userRepository.findByName(originUserName);
+        City originCity = cityRepostory.findByCity(originCityName);
+
+        Set<User> userList = originCity.getUserList();
+        userList.remove(originUser);
+        originCity.setUserList(userList);
+        cityRepostory.save(originCity);
+
+        // 获取用户城市列表
+        Set<City> cityList = originUser.getCityList();
+        // 移除用户请求城市
+        cityList.remove(originCity);
+        // 保存新的城市列表
+        originUser.setCityList(cityList);
+        // 持久化用户
+        userRepository.save(originUser);
+
+        userList = cityRepostory.findByCity(originCityName).getUserList();
+        if (userList.size() == 0) {
+            cityRepostory.delete(originCity);
+        }
+    }
+
+
+    @RequestMapping(value = "/addcity", method = RequestMethod.PATCH)
+    public void addCity(@RequestBody JSONObject cityListNew) {
+        String originUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        String originCityName = cityListNew.getString("city");
         User originUser = userRepository.findByName(originUserName);
         City originCity = cityRepostory.findByCity(originCityName);
         if (originCity !=null) {
