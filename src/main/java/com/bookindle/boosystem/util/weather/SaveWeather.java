@@ -3,7 +3,9 @@ package com.bookindle.boosystem.util.weather;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bookindle.boosystem.entity.weather.City;
 import com.bookindle.boosystem.entity.weather.Weather;
+import com.bookindle.boosystem.repository.weather.CityRepostory;
 import com.bookindle.boosystem.repository.weather.WeatherRepostory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,11 @@ import java.util.ArrayList;
 @Component
 @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 public class SaveWeather {
-//    @Autowired
-//    WeatherService weatherService;
     @Autowired
     WeatherRepostory weatherRepostory;
+
+    @Autowired
+    CityRepostory cityRepostory;
 
     public SaveWeather(){}
 
@@ -44,7 +47,7 @@ public class SaveWeather {
             weather.setNightTemplow(dailyNight.getString("templow"));
             weather.setNightWeather(dailyNight.getString("weather"));
             weather.setNightWindpower(dailyNight.getString("windpower"));
-            weather.setCity(city);
+
             weathers.add(weather);
         }
         return weathers;

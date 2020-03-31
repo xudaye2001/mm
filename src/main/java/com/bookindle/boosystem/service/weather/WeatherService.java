@@ -1,4 +1,13 @@
 package com.bookindle.boosystem.service.weather;
 
-public class WeatherService {
+import com.bookindle.boosystem.entity.weather.Weather;
+
+import java.sql.Date;
+
+public interface WeatherService {
+
+    Weather getWeatherByDate(Date date);
+
+    Weather saveWeather(Weather weather);
+
 }

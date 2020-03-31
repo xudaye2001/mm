@@ -4,14 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wxapi.WxApiCall.WxApiCall;
 import com.wxapi.model.RequestModel;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-public class getSevenDayWeatherMsg {
+@Component
+public class HttpRequestWeatherMsg {
 
     private String city;
 
-	public getSevenDayWeatherMsg() {
+	public HttpRequestWeatherMsg() {
 
 	}
 
@@ -37,9 +39,6 @@ public class getSevenDayWeatherMsg {
 
 		JSONObject jsonObject = JSON.parseObject(msg);
 		jsonObject = jsonObject.getJSONObject("result").getJSONObject("result");
-//		JSONArray jsonArray = jsonObject.getJSONArray("daily");
-
-
 
 		System.out.println(jsonObject);
 		return jsonObject ;

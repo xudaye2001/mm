@@ -48,6 +48,7 @@ public class JwtUserController extends BaseController {
             user.setCreateTime(DateUtils.getCurrentTime());
             user.setLastModifyTime(DateUtils.getCurrentTime());
             user.setProfilePicture("img/avater.png");
+
             List<UserRole> roles = new ArrayList<>();
             UserRole role1 = userRoleRepository.findByRolename("ROLE_USER");
             roles.add(role1);

@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "sys_role")
+@Table(name = "role")
 public class UserRole {
 
     @Id

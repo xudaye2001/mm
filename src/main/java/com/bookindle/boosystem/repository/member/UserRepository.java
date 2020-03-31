@@ -2,9 +2,11 @@ package com.bookindle.boosystem.repository.member;
 
 
 import com.bookindle.boosystem.entity.user.User;
+import com.bookindle.boosystem.entity.weather.City;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +18,8 @@ import java.util.List;
  * @author longzhonghua
  * @data 2018/11/04 22:30
  */
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+
 	User findByName(String name);
 	User findByMobile(String mobile);
 	User findByEmail(String email);

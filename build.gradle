@@ -30,6 +30,19 @@ repositories {
 }
 
 dependencies {
+
+    compile fileTree(dir: 'lib', includes: ['*jar'])
+
+    // https://mvnrepository.com/artifact/com.jdcloud.sdk/vm
+    compile group: 'com.jdcloud.sdk', name: 'vm', version: '1.2.7'
+
+    // https://mvnrepository.com/artifact/commons-logging/commons-logging
+    compile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+
+    // https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+
+
     // https://mvnrepository.com/artifact/com.showapi.javasdk/com.showapi.javasdk
     compile group: 'com.showapi.javasdk', name: 'com.showapi.javasdk', version: '0.0.1'
 
@@ -44,6 +57,13 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.2.5.RELEASE'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '2.2.5.RELEASE'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
+
 
 
 

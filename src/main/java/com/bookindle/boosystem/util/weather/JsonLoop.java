@@ -1,4 +1,4 @@
-package com.bookindle.boosystem.util;
+package com.bookindle.boosystem.util.weather;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-
+@EnableJpaAuditing
 @EnableCaching
 @SpringBootApplication
 public class BoosystemApplication extends SpringBootServletInitializer {

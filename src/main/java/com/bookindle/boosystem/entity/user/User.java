@@ -1,6 +1,10 @@
 package com.bookindle.boosystem.entity.user;
 
+import com.bookindle.boosystem.entity.weather.City;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,10 +15,12 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "user")
+
 public class User implements UserDetails {
     //主键及自动增长
     @Id
@@ -34,6 +40,7 @@ public class User implements UserDetails {
 
     private String password;
 
+    @Column(nullable = false)
     private String cnname;
 
     private boolean Enabled;
@@ -62,11 +69,15 @@ public class User implements UserDetails {
     private String avatar;
     //private Collection<? extends GrantedAuthority> authorities;
     //多对多映射，用户角色
+//    @Fetch(FetchMode.SUBSELECT)
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<UserRole> roles;
 
-
-
+    @JsonManagedReference
+    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(mappedBy = "userList",cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+//    @JoinTable(name="city_user",joinColumns={@JoinColumn(name="u_id")},inverseJoinColumns={@JoinColumn(name="c_id")})
+    private Set<City> cityList;
 
 
     //获取当前用户实例的password
@@ -139,5 +150,6 @@ public class User implements UserDetails {
     public void setProfilePicture(String profilePicture) {
         this.avatar = profilePicture;
     }
+
 }
 

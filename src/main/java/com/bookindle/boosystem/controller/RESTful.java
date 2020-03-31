@@ -7,6 +7,7 @@ import com.bookindle.boosystem.repository.book.BookRepostory;
 import com.bookindle.boosystem.service.book.BookService;
 import com.show.api.ShowApiRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,16 +68,11 @@ public class RESTful {
             @PathVariable("id") Long id
     ) {
         Book book = bookService.findBookById(id);
-//        long view = book.getView();
-//        if (view > 0 ) {
-//            //val +1
-//            stringRedisTemplate.boundValueOps("book_fid").increment(book.getView() + 1);
-//        } else {//val +1
-//            stringRedisTemplate.boundValueOps("view::" + id).increment(1);
-//        }
-//        String newView = stringRedisTemplate.opsForValue().get("view::" + id);
-//
-//        book.setView(Long.parseLong(newView));
         return book;
+    }
+
+    @PostMapping(value = "/getallcitys")
+    public JSONObject getAllCitys() {
+
     }
 }
