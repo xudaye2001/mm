@@ -26,8 +26,13 @@ public class SaveWeatherScheduledTasts {
     @Autowired
     SenderToQueue senderToQueue;
 
-    @Scheduled(cron = "0 30 18 ? * * ")
+
+    /**
+     * 更新城市天气
+     */
+    @Scheduled(cron = "0/20 * * * * ?")
     public void addWeathers() {
+        System.out.println("获取所有城市天气");
         weatherRepostory.truncateWeather();
         List<City> cityList = cityRepostory.findAll();
         for (int i=0;i<cityList.size();i++) {
@@ -43,27 +48,15 @@ public class SaveWeatherScheduledTasts {
         }
     }
 
-    @Scheduled(cron = "0 40 18 ? * * ")
-    public void getMessage() {
-        Date dateToday = new Date();
-
-        // 获取明日日历
-        Date dateTomorrow = new Date();
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(dateTomorrow);
-        calendar.add(Calendar.DATE, 1);
-        dateTomorrow = calendar.getTime();
-
+    /**
+     * 向用户发送短信
+     */
+//    @Scheduled(cron = "0 0/5 * * * ?")
+    public void sendUserWeatherMsg(City city) {
+        System.out.println("发送短信");
         // 获取城市列表
-        List<City> cityList = cityRepostory.findAll();
-
-        CheckWeatherByCity checkWeatherByCity = new CheckWeatherByCity();
-        for(City city : cityList) {
-            Weather weatherToday =  weatherRepostory.findByCityAndDate(city, dateToday);
-            Weather weatherTomorrow =  weatherRepostory.findByCityAndDate(city, dateTomorrow);
-            String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday,weatherTomorrow,city.getCity());
-            Set<User> userList =  city.getUserList();
-
+            String res = city.getMsg();
+            Set<User> userList = city.getUserList();
             if(res != null) {
                 for (User user:userList) {
                     Map<String, String> contentList = new HashMap<>();
@@ -81,7 +74,40 @@ public class SaveWeatherScheduledTasts {
                     this.senderToQueue.send(contentList);
                 }
             }
-        }
     }
 
+    /**
+     * 解析天气并写入城市Msg
+     */
+    @Scheduled(cron = "0/30 * * * * ?")
+    public void getMessage() {
+        System.out.println("解析天气");
+        Date dateToday = new Date();
+
+        // 获取明日日历
+        Date dateTomorrow = new Date();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(dateTomorrow);
+        calendar.add(Calendar.DATE, 1);
+        dateTomorrow = calendar.getTime();
+
+        // 获取城市列表
+        List<City> cityList = cityRepostory.findAll();
+
+        // 遍历城市列表解析天气数据
+        CheckWeatherByCity checkWeatherByCity = new CheckWeatherByCity();
+        for (City city : cityList) {
+            Weather weatherToday = weatherRepostory.findByCityAndDate(city, dateToday);
+            Weather weatherTomorrow = weatherRepostory.findByCityAndDate(city, dateTomorrow);
+            String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday, weatherTomorrow, city.getCity());
+            if (res != null) {
+                city.setMsg(res);
+                this.sendUserWeatherMsg(city);
+            } else {
+                city.setMsg(null);
+            }
+            // 解析结果持久化
+            cityRepostory.save(city);
+        }
+    }
 }

@@ -16,22 +16,6 @@ import java.util.*;
 
 @Component
 public class CheckWeatherByCity {
-    @Autowired
-    WeatherRepostory weatherRepostory;
-    @Autowired
-    CityRepostory cityRepostory;
-
-    @Autowired
-    SenderToQueue senderToQueue;
-
-    /** 获取城市列表 */
-    public List<City> getCityList() {
-        List<City> cityList = new ArrayList<>();
-        cityList = cityRepostory.findAll();
-        return cityList;
-    }
-
-
 
     public String checkWeatherAndSendRabbitMQ(Weather todayWeather, Weather tomorrowWeather, String city) {
         Date dateToday = new Date();
@@ -47,7 +31,7 @@ public class CheckWeatherByCity {
         String res = "明天"+dateToday.getDate()+"日"+city+"==>";
         // 最高温差
         int temperatureDifferent =  Integer.parseInt(tomorrowWeather.getDayTempow()) - Integer.parseInt(todayWeather.getDayTempow());
-        int windPower = Integer.parseInt(tomorrowWeather.getDayWindpower().replace("级","").replace("微风","1"));
+        int windPower = Integer.parseInt(tomorrowWeather.getDayWindpower().replace("级","").replace("微风","1").replace("-", ""));
         int settingTem = 5;
         int settingWin = 4;
         String stuTemRes = "今日气温:"+todayWeather.getDayTempow()+"°"+"明日气温:"+tomorrowWeather.getDayTempow()+"°,";
@@ -65,8 +49,14 @@ public class CheckWeatherByCity {
             sendMsg = true;
         }
         if (windPower>=settingWin) {
-            String windRes = "风力"+windPower+"级.";
+            String windPowerString = String.valueOf(windPower);
+            if (windPowerString.length()>=2) {
+                windPowerString = windPowerString.substring(0,1)+"至"+windPowerString.substring(1,2);
+            }
+
+            String windRes = "风力"+windPowerString+"级.";
             res = res+windRes;
+            sendMsg = true;
         }
 
         String weatherRes = tomorrowWeather.getDayWeather();
@@ -75,6 +65,7 @@ public class CheckWeatherByCity {
             res = res+weatherResinf;
             sendMsg = true;
         }
+
 
         if (sendMsg ==true) {
             return res;

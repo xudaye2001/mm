@@ -187,7 +187,14 @@ public class TaskController {
             Weather weatherTomorrow =  weatherRepostory.findByCityAndDate(city, dateTomorrow);
             String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday,weatherTomorrow,city.getCity());
             Set<User> userList =  city.getUserList();
-
+            if (res !=null) {
+                city.setMsg(res);
+            }else {
+                city.setMsg(null);
+            }
+            cityRepostory.save(city);
+            city = cityRepostory.findByCity(city.getCity());
+            res = city.getMsg();
             if(res != null) {
                 for (User user:userList) {
                     Map<String, String> contentList = new HashMap<>();
