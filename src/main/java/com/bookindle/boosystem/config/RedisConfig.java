@@ -20,9 +20,8 @@ import java.lang.reflect.Method;
 //@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
 
-    @Override
     @Bean
-    public KeyGenerator keyGenerator() {
+    public KeyGenerator wiselyKeyGenerator() {
         return new KeyGenerator() {
             @Override
             public Object generate(Object target, Method method, Object... params) {
@@ -35,12 +34,15 @@ public class RedisConfig extends CachingConfigurerSupport {
                 return sb.toString();
             }
         };
+
     }
+
+
+
 
     @SuppressWarnings("rawtypes")
     @Bean
     //缓存管理器
-
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheManager cacheManager = RedisCacheManager.create(connectionFactory);
         //设置缓存过期时间

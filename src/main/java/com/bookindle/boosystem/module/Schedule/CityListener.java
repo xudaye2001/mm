@@ -2,6 +2,7 @@ package com.bookindle.boosystem.module.Schedule;
 
 import com.bookindle.boosystem.entity.weather.CityList;
 import com.bookindle.boosystem.repository.weather.CityListRepostory;
+import com.bookindle.boosystem.service.weather.CityListService;
 import com.bookindle.boosystem.util.Api.CityListApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,11 @@ import java.util.List;
 public class CityListener implements ServletContextListener {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+//    @Autowired
+//    CityListRepostory cityListRepostory;
+
     @Autowired
-    CityListRepostory cityListRepostory;
+    CityListService cityListService;
 
     //项目启动执行
     @Override
@@ -32,7 +36,7 @@ public class CityListener implements ServletContextListener {
         for (int i=0;i<cityListString.size();i++) {
             CityList city = new CityList();
             city.setCitySingle(cityListString.get(i));
-            cityListRepostory.save(city);
+            cityListService.save(city);
         }
         long endTime = System.currentTimeMillis();
         logger.info("执行启动任务结束,共花费时间{}"+(startTime-endTime));

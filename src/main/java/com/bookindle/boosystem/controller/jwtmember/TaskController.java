@@ -12,6 +12,7 @@ import com.bookindle.boosystem.repository.weather.CityListRepostory;
 import com.bookindle.boosystem.repository.weather.CityRepostory;
 import com.bookindle.boosystem.repository.weather.WeatherRepostory;
 import com.bookindle.boosystem.service.member.UserService;
+import com.bookindle.boosystem.service.weather.CityListService;
 import com.bookindle.boosystem.util.weather.CheckWeatherByCity;
 import org.apache.logging.log4j.message.MapMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,10 @@ public class TaskController {
     private WeatherRepostory weatherRepostory;
     @Autowired
     private SenderToQueue senderToQueue;
+//    @Autowired
+//    private CityListRepostory cityListRepostory;
     @Autowired
-    private CityListRepostory cityListRepostory;
+    private CityListService cityListService;
 
     @GetMapping
     public String listTasks(){
@@ -128,7 +131,7 @@ public class TaskController {
 
         // 比对数据库中的城市名称
         List<CityList> cityListDataBase = new ArrayList<>();
-        cityListDataBase = cityListRepostory.findAll();
+        cityListDataBase = cityListService.findAll();
         for (int i=0;i<cityListDataBase.size();i++) {
             String cityListDataBaseName = cityListDataBase.get(i).getCitySingle();
             if (cityListDataBaseName.contains(originCityName) || originCityName.contains(cityListDataBaseName)) {

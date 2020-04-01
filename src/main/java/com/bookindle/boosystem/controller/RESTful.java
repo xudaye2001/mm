@@ -8,8 +8,10 @@ import com.bookindle.boosystem.entity.weather.CityList;
 import com.bookindle.boosystem.repository.book.BookRepostory;
 import com.bookindle.boosystem.repository.weather.CityListRepostory;
 import com.bookindle.boosystem.service.book.BookService;
+import com.bookindle.boosystem.service.weather.CityListService;
 import com.show.api.ShowApiRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +31,11 @@ public class RESTful {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
+//    @Autowired
+////    CityListRepostory cityListRepostory;
+
     @Autowired
-    CityListRepostory cityListRepostory;
+    CityListService cityListService;
 
     /**
      * 获取图书列表
@@ -75,10 +80,11 @@ public class RESTful {
         return book;
     }
 
+    @Cacheable(cacheNames = "getInputCityList")
     @PostMapping(value = "/getInputCityList")
     public String getInputCityList() {
         List<CityList> cityLists = new ArrayList<>();
-        cityLists = cityListRepostory.findAll();
+        cityLists = cityListService.findAll();
         return JSON.toJSONString(cityLists);
     }
 }
