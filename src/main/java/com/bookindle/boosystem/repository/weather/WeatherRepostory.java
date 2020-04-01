@@ -28,8 +28,8 @@ public interface WeatherRepostory extends JpaRepository<Weather, Long>, JpaSpeci
             @Param("view") long view, @Param("id")long id
     );
 
-    @Transactional
-    @Modifying
-    @Query(value = "truncate weather",nativeQuery = true)
-    void truncateWeather();
+//    @Transactional
+//    @Modifying
+//    @Query(value = "truncate weather",nativeQuery = true)
+//    void truncateWeather();
 }

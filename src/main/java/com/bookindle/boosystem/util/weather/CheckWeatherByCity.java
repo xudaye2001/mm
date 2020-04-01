@@ -17,9 +17,8 @@ import java.util.*;
 @Component
 public class CheckWeatherByCity {
 
-    public String checkWeatherAndSendRabbitMQ(Weather todayWeather, Weather tomorrowWeather, String city) {
+    public String checkWeatherAndSendRabbitMQ(Weather todayWeather, Weather tomorrowWeather, String city, Date dateTomorrow) {
         Date dateToday = new Date();
-        dateToday.getDate();
         StringBuilder sb = new StringBuilder();
         sb.append("阵雨,雷阵雨,雷阵雨伴有冰雹,雨夹雪,小雨,中雨,大雨,暴雨,大暴雨," +
                 "特大暴雨,阵雪,小雪, 中雪,大雪,暴雪,雾,冻雨,沙尘暴,小到中雨,中到大雨,大到暴雨,\n" +
@@ -27,8 +26,7 @@ public class CheckWeatherByCity {
         String str = sb.toString();
         String[] parts = str.split(",");
         List weatherList = Arrays.asList(parts);
-//        String res = "【绵绵细雨】"+ "老李" + "明天"+dateToday.getDate()+"日"+city+"==>";
-        String res = "明天"+dateToday.getDate()+"日"+city+"==>";
+        String res = ",明天"+dateTomorrow.getDate()+"日"+city+"=>";
         // 最高温差
         int temperatureDifferent =  Integer.parseInt(tomorrowWeather.getDayTempow()) - Integer.parseInt(todayWeather.getDayTempow());
         int windPower = Integer.parseInt(tomorrowWeather.getDayWindpower().replace("级","").replace("微风","1").replace("-", ""));
@@ -65,7 +63,6 @@ public class CheckWeatherByCity {
             res = res+weatherResinf;
             sendMsg = true;
         }
-
 
         if (sendMsg ==true) {
             return res;

@@ -185,7 +185,7 @@ public class TaskController {
         for(City city : cityList) {
             Weather weatherToday =  weatherRepostory.findByCityAndDate(city, dateToday);
             Weather weatherTomorrow =  weatherRepostory.findByCityAndDate(city, dateTomorrow);
-            String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday,weatherTomorrow,city.getCity());
+            String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday,weatherTomorrow,city.getCity(), dateTomorrow);
             Set<User> userList =  city.getUserList();
             if (res !=null) {
                 city.setMsg(res);

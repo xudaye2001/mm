@@ -30,10 +30,10 @@ public class SaveWeatherScheduledTasts {
     /**
      * 更新城市天气
      */
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0 50 18 * * ?")
     public void addWeathers() {
         System.out.println("获取所有城市天气");
-        weatherRepostory.truncateWeather();
+//        weatherRepostory.truncateWeather();
         List<City> cityList = cityRepostory.findAll();
         for (int i=0;i<cityList.size();i++) {
             String city = cityList.get(i).getCity();
@@ -63,10 +63,13 @@ public class SaveWeatherScheduledTasts {
                     String mobile =  user.getMobile();
                     String cnName = user.getCnname();
                     String resFront = "【绵绵细雨】"+ user.getCnname();
+                    String mineRes = "<=哥哥说他好爱你呀=>";
 
                     if (cnName != null) {
                         res = resFront+res;
-                    }else {
+                    } if (cnName.equals("绵绵小朋友")){
+                        res = res + mineRes;
+                    } else {
                         res = "【绵绵细雨】绵绵小朋友"+res;
                     }
                     contentList.put("mobile",mobile);
@@ -79,7 +82,7 @@ public class SaveWeatherScheduledTasts {
     /**
      * 解析天气并写入城市Msg
      */
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "0 00 19 * * ?")
     public void getMessage() {
         System.out.println("解析天气");
         Date dateToday = new Date();
@@ -99,7 +102,7 @@ public class SaveWeatherScheduledTasts {
         for (City city : cityList) {
             Weather weatherToday = weatherRepostory.findByCityAndDate(city, dateToday);
             Weather weatherTomorrow = weatherRepostory.findByCityAndDate(city, dateTomorrow);
-            String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday, weatherTomorrow, city.getCity());
+            String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday, weatherTomorrow, city.getCity(),dateTomorrow);
             if (res != null) {
                 city.setMsg(res);
                 this.sendUserWeatherMsg(city);

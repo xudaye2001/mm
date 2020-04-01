@@ -29,8 +29,8 @@ public class SendTelephoneMsg {
         model.setQueryParams(queryMap);
         WxApiCall call = new WxApiCall();
         call.setModel(model);
-//        String res = call.request();
-//        System.out.println(res);
+        String res = call.request();
+        System.out.println(res);
         System.out.println("向"+mobile+"发送了"+content);
     }
 }

@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.85ea14f7890a048ba1a3033926acba44.js"
+  "/precache-manifest.f3fcf6997c2b48de49ff51db19532c40.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "booksysterm"});

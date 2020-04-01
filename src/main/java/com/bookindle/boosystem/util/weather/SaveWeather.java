@@ -52,10 +52,4 @@ public class SaveWeather {
         }
         return weathers;
     }
-
-    public static void main(String[] args) {
-        SaveWeather saveWeather = new SaveWeather();
-        saveWeather.saveWeathers("上蔡");
-    }
-
 }

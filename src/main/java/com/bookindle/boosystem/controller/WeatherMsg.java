@@ -37,7 +37,7 @@ public class WeatherMsg {
      */
     @RequestMapping(value = "/updataweathers", method = RequestMethod.POST)
     public void addWeathers() {
-        weatherRepostory.truncateWeather();
+//        weatherRepostory.truncateWeather();
         List<City> cityList = cityRepostory.findAll();
 
 
