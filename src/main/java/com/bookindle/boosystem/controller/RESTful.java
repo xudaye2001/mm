@@ -1,19 +1,20 @@
 package com.bookindle.boosystem.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bookindle.boosystem.entity.book.Book;
 
+import com.bookindle.boosystem.entity.weather.CityList;
 import com.bookindle.boosystem.repository.book.BookRepostory;
+import com.bookindle.boosystem.repository.weather.CityListRepostory;
 import com.bookindle.boosystem.service.book.BookService;
 import com.show.api.ShowApiRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -27,6 +28,9 @@ public class RESTful {
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    CityListRepostory cityListRepostory;
 
     /**
      * 获取图书列表
@@ -71,4 +75,10 @@ public class RESTful {
         return book;
     }
 
+    @PostMapping(value = "/getInputCityList")
+    public String getInputCityList() {
+        List<CityList> cityLists = new ArrayList<>();
+        cityLists = cityListRepostory.findAll();
+        return JSON.toJSONString(cityLists);
+    }
 }

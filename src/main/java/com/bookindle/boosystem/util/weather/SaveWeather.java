@@ -16,11 +16,6 @@ import java.util.ArrayList;
 @Component
 @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 public class SaveWeather {
-    @Autowired
-    WeatherRepostory weatherRepostory;
-
-    @Autowired
-    CityRepostory cityRepostory;
 
     public SaveWeather(){}
 

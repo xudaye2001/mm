@@ -9,15 +9,11 @@ import com.bookindle.boosystem.util.weather.CheckWeatherByCity;
 import com.wxapi.WxApiCall.WxApiCall;
 import com.wxapi.model.RequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
-
+@Component
 public class SendTelephoneMsg {
-    @Autowired
-    private CityRepostory cityRepostory;
-
-    @Autowired
-    private WeatherRepostory weatherRepostory;
 
     public void sendMsgToUserMobile(String mobile, String content) {
         RequestModel model = new RequestModel();

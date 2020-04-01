@@ -3,10 +3,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.bookindle.boosystem.entity.book.Book;
 import com.bookindle.boosystem.entity.user.User;
 import com.bookindle.boosystem.entity.weather.City;
+import com.bookindle.boosystem.entity.weather.CityList;
 import com.bookindle.boosystem.entity.weather.Weather;
 import com.bookindle.boosystem.mq.SenderToQueue;
 import com.bookindle.boosystem.repository.book.BookRepostory;
 import com.bookindle.boosystem.repository.member.UserRepository;
+import com.bookindle.boosystem.repository.weather.CityListRepostory;
 import com.bookindle.boosystem.repository.weather.CityRepostory;
 import com.bookindle.boosystem.repository.weather.WeatherRepostory;
 import com.bookindle.boosystem.service.member.UserService;
@@ -42,6 +44,8 @@ public class TaskController {
     private WeatherRepostory weatherRepostory;
     @Autowired
     private SenderToQueue senderToQueue;
+    @Autowired
+    private CityListRepostory cityListRepostory;
 
     @GetMapping
     public String listTasks(){
@@ -116,42 +120,55 @@ public class TaskController {
 
     @RequestMapping(value = "/addcity", method = RequestMethod.PATCH)
     public void addCity(@RequestBody JSONObject cityListNew) {
+
         String originUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         String originCityName = cityListNew.getString("city");
         User originUser = userRepository.findByName(originUserName);
         City originCity = cityRepostory.findByCity(originCityName);
-        if (originCity !=null) {
-            // 给User增加城市
-            Set<City> cityList = new HashSet<>();
-            cityList.add(originCity);
-            originUser.setCityList(cityList);
-            userRepository.save(originUser);
 
-            // 给城市增加user
-            Set<User> userList =  originCity.getUserList();
-            userList.add(originUser);
-            originCity.setUserList(userList);
+        // 比对数据库中的城市名称
+        List<CityList> cityListDataBase = new ArrayList<>();
+        cityListDataBase = cityListRepostory.findAll();
+        for (int i=0;i<cityListDataBase.size();i++) {
+            String cityListDataBaseName = cityListDataBase.get(i).getCitySingle();
+            if (cityListDataBaseName.contains(originCityName) || originCityName.contains(cityListDataBaseName)) {
+                originCityName = cityListDataBaseName;
 
-            cityRepostory.save(originCity);
+                // 增加城市
+                if (originCity !=null) {
+                    // 给User增加城市
+                    Set<City> cityList = new HashSet<>();
+                    cityList.add(originCity);
+                    originUser.setCityList(cityList);
+                    userRepository.save(originUser);
 
-        }else {
+                    // 给城市增加user
+                    Set<User> userList =  originCity.getUserList();
+                    userList.add(originUser);
+                    originCity.setUserList(userList);
 
-            // 增加城市
-            originCity = new City();
-            originCity.setCity(originCityName);
+                    cityRepostory.save(originCity);
 
-            Set<User> userList = new HashSet<>();
-            userList.add(originUser);
-            originCity.setUserList(userList);
-            cityRepostory.save(originCity);
+                }else {
 
-            // 保存用户
-            Set<City> cityList = new HashSet<>();
-            cityList = originUser.getCityList();
-            cityList.add(originCity);
-            originUser.setCityList( cityList);
-            userRepository.save(originUser);
+                    // 增加城市
+                    originCity = new City();
+                    originCity.setCity(originCityName);
+
+                    Set<User> userList = new HashSet<>();
+                    userList.add(originUser);
+                    originCity.setUserList(userList);
+                    cityRepostory.save(originCity);
+
+                    // 保存用户
+                    Set<City> cityList = new HashSet<>();
+                    cityList = originUser.getCityList();
+                    cityList.add(originCity);
+                    originUser.setCityList( cityList);
+                    userRepository.save(originUser);
 //            return originUser.getCityList();
+                }
+            }
         }
     }
 
