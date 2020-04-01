@@ -6,12 +6,12 @@ plugins {
 
 apply plugin: 'war'
 war {
-    baseName = 'booksystem'
-    version = '1.0.0-demo'
+    baseName = 'mianmian'
+    version = '1.0.1-mm'
 }
 
 group = 'com.bookindle'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {

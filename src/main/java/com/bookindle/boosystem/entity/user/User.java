@@ -90,10 +90,10 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(String name, String password, String email, String mobile) {
+    public User(String name, String password, String cnname, String mobile) {
         this.name = name;
         this.password = password;
-        this.email = email;
+        this.cnname = cnname;
         this.mobile = mobile;
     }
 

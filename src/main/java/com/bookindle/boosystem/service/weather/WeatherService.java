@@ -10,4 +10,6 @@ public interface WeatherService {
 
     Weather saveWeather(Weather weather);
 
+
+
 }

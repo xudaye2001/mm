@@ -31,7 +31,7 @@ public class CityListApi {
         for (int i=0;i<resFinal.size();i++) {
             cityList.add(resFinal.getJSONObject(i).getString("city"));
         }
-        System.out.println(cityList);
+        System.out.println("请求城市列表成功");
         return cityList;
     }
 

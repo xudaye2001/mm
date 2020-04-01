@@ -45,8 +45,8 @@ public class TaskController {
     private WeatherRepostory weatherRepostory;
     @Autowired
     private SenderToQueue senderToQueue;
-//    @Autowired
-//    private CityListRepostory cityListRepostory;
+    @Autowired
+    private CityListRepostory cityListRepostory;
     @Autowired
     private CityListService cityListService;
 
@@ -123,63 +123,85 @@ public class TaskController {
 
     @RequestMapping(value = "/addcity", method = RequestMethod.PATCH)
     public void addCity(@RequestBody JSONObject cityListNew) {
-
+        System.out.println("执行添加城市函数");
         String originUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         String originCityName = cityListNew.getString("city");
-        User originUser = userRepository.findByName(originUserName);
-        City originCity = cityRepostory.findByCity(originCityName);
+        System.out.println(originUserName+"请求城市名:"+originCityName);
 
-        // 比对数据库中的城市名称
-        List<CityList> cityListDataBase = new ArrayList<>();
-        cityListDataBase = cityListService.findAll();
+        System.out.println("获取数据库中的城市");
+        // 获取数据库中的标准城市名称
+        List<CityList> cityListDataBase = cityListRepostory.findAll();
+        System.out.println("标准数据库第一个:"+cityListDataBase.get(1));
+
+        //设置
+        Boolean citySame = false;
+        System.out.println("获取标准城市名字");
         for (int i=0;i<cityListDataBase.size();i++) {
             String cityListDataBaseName = cityListDataBase.get(i).getCitySingle();
-            if (cityListDataBaseName.contains(originCityName) || originCityName.contains(cityListDataBaseName)) {
-                originCityName = cityListDataBaseName;
-
-                // 增加城市
-                if (originCity !=null) {
-                    // 给User增加城市
-                    Set<City> cityList = new HashSet<>();
-                    cityList.add(originCity);
-                    originUser.setCityList(cityList);
-                    userRepository.save(originUser);
-
-                    // 给城市增加user
-                    Set<User> userList =  originCity.getUserList();
-                    userList.add(originUser);
-                    originCity.setUserList(userList);
-
-                    cityRepostory.save(originCity);
-
-                }else {
-
-                    // 增加城市
-                    originCity = new City();
-                    originCity.setCity(originCityName);
-
-                    Set<User> userList = new HashSet<>();
-                    userList.add(originUser);
-                    originCity.setUserList(userList);
-                    cityRepostory.save(originCity);
-
-                    // 保存用户
-                    Set<City> cityList = new HashSet<>();
-                    cityList = originUser.getCityList();
-                    cityList.add(originCity);
-                    originUser.setCityList( cityList);
-                    userRepository.save(originUser);
-//            return originUser.getCityList();
+            if (originCityName.equals(cityListDataBaseName)) {
+                citySame = true;
+                break;
+            }
+        }
+        if (!citySame) {
+            for (int i=0;i<cityListDataBase.size();i++) {
+                String cityListDataBaseName = cityListDataBase.get(i).getCitySingle();
+                if (cityListDataBaseName.contains(originCityName) || originCityName.contains(cityListDataBaseName)) {
+                    originCityName = cityListDataBaseName;
+                    citySame = true;
+                    break;
                 }
             }
         }
+        System.out.println("添加城市");
+        System.out.println("citySame:"+citySame);
+        User originUser = userRepository.findByName(originUserName);
+        City originCity = cityRepostory.findByCity(originCityName);
+            // 增加城市
+            System.out.println("添加城市开始");
+            if (originCity !=null) {
+                // 给User增加城市
+                System.out.println("从数据库添加");
+                Set<City> cityList = new HashSet<>();
+                cityList.add(originCity);
+                originUser.setCityList(cityList);
+                userRepository.save(originUser);
+
+                // 给城市增加user
+                Set<User> userList =  originCity.getUserList();
+                userList.add(originUser);
+                originCity.setUserList(userList);
+
+                cityRepostory.save(originCity);
+
+            }else {
+                // 增加城市
+                System.out.println("新添加");
+                originCity = new City();
+                originCity.setCity(originCityName);
+
+                Set<User> userList = new HashSet<>();
+                userList.add(originUser);
+                originCity.setUserList(userList);
+                cityRepostory.save(originCity);
+
+                // 保存用户
+                Set<City> cityList = new HashSet<>();
+                cityList = originUser.getCityList();
+                cityList.add(originCity);
+                originUser.setCityList(cityList);
+                System.out.println("保存用户");
+                userRepository.save(originUser);
+                System.out.println("完成");
+
+            }
     }
 
     @RequestMapping(value = "/getcitylist", method = RequestMethod.POST)
     public List<String> getCityList() {
         User user = userService.findUserByName(SecurityContextHolder.getContext().getAuthentication().getName());
-        Set<City> citiys = user.getCityList();
-        Iterator<City> cityIterator = citiys.iterator();
+        Set<City> userCityList = user.getCityList();
+        Iterator<City> cityIterator = userCityList.iterator();
         List<String> cityList = new ArrayList<>();
         while (cityIterator.hasNext()) {
             cityList.add(cityIterator.next().getCity());

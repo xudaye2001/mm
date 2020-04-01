@@ -1,5 +1,6 @@
 package com.bookindle.boosystem.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -33,4 +34,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //其中OTA表示访问的前缀。"file:D:/OTA/"是文件真实的存储路径
         registry.addResourceHandler("/UPLOAD/**").addResourceLocations("file:F:/UPLOAD/");
     }
+
 }

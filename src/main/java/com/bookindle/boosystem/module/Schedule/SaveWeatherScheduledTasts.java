@@ -27,22 +27,34 @@ public class SaveWeatherScheduledTasts {
     SenderToQueue senderToQueue;
 
 
+
     /**
      * 更新城市天气
      */
     @Scheduled(cron = "0 50 18 * * ?")
     public void addWeathers() {
         System.out.println("获取所有城市天气");
-//        weatherRepostory.truncateWeather();
+
+
+        // 获取所有城市
         List<City> cityList = cityRepostory.findAll();
+        // 删除之前天气信息
+        weatherRepostory.deleteAll();
+
+        // 遍历城市列表
         for (int i=0;i<cityList.size();i++) {
             String city = cityList.get(i).getCity();
             SaveWeather saveWeather = new SaveWeather();
+
+            //根据城市名称获取当前城市7日天气
             ArrayList<Weather> weathers = saveWeather.saveWeathers(city);
+
             City cityObject = cityRepostory.findByCity(city);
             for (int j=0;j<weathers.size();j++) {
                 Weather weather = weathers.get(j);
                 weather.setCity(cityObject);
+
+
                 weatherRepostory.save(weather);
             }
         }
@@ -58,6 +70,7 @@ public class SaveWeatherScheduledTasts {
             String res = city.getMsg();
             Set<User> userList = city.getUserList();
             if(res != null) {
+
                 for (User user:userList) {
                     Map<String, String> contentList = new HashMap<>();
                     String mobile =  user.getMobile();
@@ -65,16 +78,29 @@ public class SaveWeatherScheduledTasts {
                     String resFront = "【绵绵细雨】"+ user.getCnname();
                     String mineRes = "<=哥哥说他好爱你呀=>";
 
+
+                    if (cnName.equals("波澜绵绵")) {
+                        cnName = "绵绵小朋友";
+                    }
+                    if (cnName.equals("绵绵小朋友")){
+                        res = res + mineRes;
+                    }
+
+
+
                     if (cnName != null) {
                         res = resFront+res;
-                    } if (cnName.equals("绵绵小朋友")){
-                        res = res + mineRes;
-                    } else {
-                        res = "【绵绵细雨】绵绵小朋友"+res;
+                    }else {
+                        res = "【绵绵细雨】您好" + res;
                     }
+
+
+
+
                     contentList.put("mobile",mobile);
                     contentList.put("content", res);
                     this.senderToQueue.send(contentList);
+                    res = city.getMsg();
                 }
             }
     }
@@ -100,8 +126,10 @@ public class SaveWeatherScheduledTasts {
         // 遍历城市列表解析天气数据
         CheckWeatherByCity checkWeatherByCity = new CheckWeatherByCity();
         for (City city : cityList) {
-            Weather weatherToday = weatherRepostory.findByCityAndDate(city, dateToday);
-            Weather weatherTomorrow = weatherRepostory.findByCityAndDate(city, dateTomorrow);
+
+             Weather weatherToday = weatherRepostory.findByCityAndDate(city, dateToday);
+             Weather weatherTomorrow = weatherRepostory.findByCityAndDate(city, dateTomorrow);
+
             String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday, weatherTomorrow, city.getCity(),dateTomorrow);
             if (res != null) {
                 city.setMsg(res);

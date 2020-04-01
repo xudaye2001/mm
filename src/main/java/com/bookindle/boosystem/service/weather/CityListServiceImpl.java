@@ -23,13 +23,13 @@ public class CityListServiceImpl implements CityListService {
     }
 
     @Override
-//    @Cacheable
     public Optional<CityList> findCityById(long id) {
         return cityListRepostory.findById(id);
     }
 
-    @Cacheable(value = "findAll",keyGenerator="wiselyKeyGenerator")
+
     @Override
+    @Cacheable(value = "findAllService",keyGenerator="keyGenerator")
     public List<CityList> findAll() {
         return cityListRepostory.findAll();
     }
