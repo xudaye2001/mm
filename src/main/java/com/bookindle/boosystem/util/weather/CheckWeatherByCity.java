@@ -26,7 +26,7 @@ public class CheckWeatherByCity {
         String str = sb.toString();
         String[] parts = str.split(",");
         List weatherList = Arrays.asList(parts);
-        String res = ",明天"+dateTomorrow.getDate()+"日"+city+"=>";
+        String res = "明天"+dateTomorrow.getDate()+"日"+city+"=>";
         // 最高温差
         int temperatureDifferent =  Integer.parseInt(tomorrowWeather.getDayTempow()) - Integer.parseInt(todayWeather.getDayTempow());
         int windPower = Integer.parseInt(tomorrowWeather.getDayWindpower().replace("级","").replace("微风","1").replace("-", ""));

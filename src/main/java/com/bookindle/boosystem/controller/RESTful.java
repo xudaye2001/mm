@@ -38,10 +38,6 @@ public class RESTful {
     @Autowired
     UserRepository userRepository;
 
-
-//    @Autowired
-////    CityListRepostory cityListRepostory;
-
     @Autowired
     CityListService cityListService;
 

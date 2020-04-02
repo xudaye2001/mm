@@ -19,5 +19,4 @@ public class WeatherServiceImpl implements WeatherService {
     public Weather saveWeather(Weather weather) {
         return weatherRepostory.save(weather);
     }
-
 }

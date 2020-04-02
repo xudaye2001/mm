@@ -23,8 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 /**
- * @author longzhonghua
- * @data 3/5/2019 8:52 PM
+ * 需验证的请求
  */
 @RestController
 @RequestMapping("/restful/tasks")
@@ -45,10 +44,12 @@ public class TaskController {
     private WeatherRepostory weatherRepostory;
     @Autowired
     private SenderToQueue senderToQueue;
-    @Autowired
-    private CityListRepostory cityListRepostory;
+
+
     @Autowired
     private CityListService cityListService;
+
+
 
     @GetMapping
     public String listTasks(){
@@ -123,19 +124,14 @@ public class TaskController {
 
     @RequestMapping(value = "/addcity", method = RequestMethod.PATCH)
     public void addCity(@RequestBody JSONObject cityListNew) {
-        System.out.println("执行添加城市函数");
         String originUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         String originCityName = cityListNew.getString("city");
-        System.out.println(originUserName+"请求城市名:"+originCityName);
 
-        System.out.println("获取数据库中的城市");
         // 获取数据库中的标准城市名称
-        List<CityList> cityListDataBase = cityListRepostory.findAll();
-        System.out.println("标准数据库第一个:"+cityListDataBase.get(1));
+        List<CityList> cityListDataBase = cityListService.findAll();
 
         //设置
         Boolean citySame = false;
-        System.out.println("获取标准城市名字");
         for (int i=0;i<cityListDataBase.size();i++) {
             String cityListDataBaseName = cityListDataBase.get(i).getCitySingle();
             if (originCityName.equals(cityListDataBaseName)) {
@@ -153,15 +149,11 @@ public class TaskController {
                 }
             }
         }
-        System.out.println("添加城市");
-        System.out.println("citySame:"+citySame);
         User originUser = userRepository.findByName(originUserName);
         City originCity = cityRepostory.findByCity(originCityName);
             // 增加城市
-            System.out.println("添加城市开始");
             if (originCity !=null) {
                 // 给User增加城市
-                System.out.println("从数据库添加");
                 Set<City> cityList = new HashSet<>();
                 cityList.add(originCity);
                 originUser.setCityList(cityList);
@@ -176,7 +168,6 @@ public class TaskController {
 
             }else {
                 // 增加城市
-                System.out.println("新添加");
                 originCity = new City();
                 originCity.setCity(originCityName);
 
@@ -190,10 +181,7 @@ public class TaskController {
                 cityList = originUser.getCityList();
                 cityList.add(originCity);
                 originUser.setCityList(cityList);
-                System.out.println("保存用户");
                 userRepository.save(originUser);
-                System.out.println("完成");
-
             }
     }
 

@@ -8,12 +8,15 @@ import com.bookindle.boosystem.repository.weather.WeatherRepostory;
 import com.bookindle.boosystem.util.weather.CheckWeatherByCity;
 import com.wxapi.WxApiCall.WxApiCall;
 import com.wxapi.model.RequestModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 @Component
 public class SendTelephoneMsg {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public void sendMsgToUserMobile(String mobile, String content) {
         RequestModel model = new RequestModel();
@@ -25,8 +28,10 @@ public class SendTelephoneMsg {
         model.setQueryParams(queryMap);
         WxApiCall call = new WxApiCall();
         call.setModel(model);
-//        String res = call.request();
+        String res = call.request();
+        logger.info("向"+mobile+"发送了"+content);
 //        System.out.println(res);
-        System.out.println("向"+mobile+"发送了"+content);
+//        System.out.println("向"+mobile+"发送了"+content);
+
     }
 }

@@ -8,6 +8,7 @@ import com.bookindle.boosystem.mq.SenderToQueue;
 import com.bookindle.boosystem.repository.weather.CityRepostory;
 import com.bookindle.boosystem.repository.weather.WeatherRepostory;
 import com.bookindle.boosystem.util.weather.CheckWeatherByCity;
+import com.bookindle.boosystem.util.weather.GetMsgFront;
 import com.bookindle.boosystem.util.weather.SaveWeather;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -61,7 +62,7 @@ public class SaveWeatherScheduledTasts {
     }
 
     /**
-     * 向用户发送短信
+     * 根据城市名向用户发送短信
      */
 //    @Scheduled(cron = "0 0/5 * * * ?")
     public void sendUserWeatherMsg(City city) {
@@ -72,35 +73,19 @@ public class SaveWeatherScheduledTasts {
             if(res != null) {
 
                 for (User user:userList) {
-                    Map<String, String> contentList = new HashMap<>();
+
                     String mobile =  user.getMobile();
                     String cnName = user.getCnname();
-                    String resFront = "【绵绵细雨】"+ user.getCnname();
-                    String mineRes = "<=哥哥说他好爱你呀=>";
 
+                    // 处理头部消息
+                    GetMsgFront getMsgFront = new GetMsgFront();
+                    String newRes = getMsgFront.getMsgFronByCnname(cnName , res);
 
-                    if (cnName.equals("波澜绵绵")) {
-                        cnName = "绵绵小朋友";
-                    }
-                    if (cnName.equals("绵绵小朋友")){
-                        res = res + mineRes;
-                    }
-
-
-
-                    if (cnName != null) {
-                        res = resFront+res;
-                    }else {
-                        res = "【绵绵细雨】您好" + res;
-                    }
-
-
-
-
+                    // 交给中间件分发
+                    Map<String, String> contentList = new HashMap<>();
                     contentList.put("mobile",mobile);
-                    contentList.put("content", res);
+                    contentList.put("content", newRes);
                     this.senderToQueue.send(contentList);
-                    res = city.getMsg();
                 }
             }
     }

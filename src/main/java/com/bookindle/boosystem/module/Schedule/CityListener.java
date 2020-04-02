@@ -12,17 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.ServletContextEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class CityListener   {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     CityListService cityListService;
@@ -34,8 +29,7 @@ public class CityListener   {
         logger.info("开始执行启动任务,{获取城市列表并写入数据库及缓存}"+startTime);
         //业务处理
         CityListApi cityListApi = new CityListApi();
-        List<String> cityListString = new ArrayList<>();
-        cityListString = cityListApi.getCityList();
+        List<String> cityListString = cityListApi.getCityList();
         for (int i=0;i<cityListString.size();i++) {
             CityList city = new CityList();
             city.setCitySingle(cityListString.get(i));
