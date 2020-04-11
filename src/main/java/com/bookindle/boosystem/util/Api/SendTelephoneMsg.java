@@ -30,7 +30,7 @@ public class SendTelephoneMsg {
         call.setModel(model);
         String res = call.request();
         logger.info("向"+mobile+"发送了"+content);
-//        System.out.println(res);
+        System.out.println(res);
 //        System.out.println("向"+mobile+"发送了"+content);
 
     }

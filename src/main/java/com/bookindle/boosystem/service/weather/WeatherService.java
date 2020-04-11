@@ -1,15 +1,13 @@
 package com.bookindle.boosystem.service.weather;
 
+import com.bookindle.boosystem.entity.weather.City;
 import com.bookindle.boosystem.entity.weather.Weather;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Date;
+import java.util.Date;
 
 public interface WeatherService {
-
-    Weather getWeatherByDate(Date date);
-
-    Weather saveWeather(Weather weather);
-
-
-
+    Weather findByCityAndDate(City city, Date date);
+    void deleteAll();
+    void save(Weather weather);
 }

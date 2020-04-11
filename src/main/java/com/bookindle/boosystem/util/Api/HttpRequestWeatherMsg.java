@@ -1,4 +1,4 @@
-package com.bookindle.boosystem.util.weather;
+package com.bookindle.boosystem.util.Api;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -10,11 +10,7 @@ import java.util.*;
 
 @Component
 public class HttpRequestWeatherMsg {
-
-    private String city;
-
 	public HttpRequestWeatherMsg() {
-
 	}
 
 	/**

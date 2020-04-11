@@ -15,7 +15,10 @@ public interface UserService {
 
     void addCity(User user, List<City> city);
 
-    User findUserByName(String username);
+    void save(User user);
+    User findByName(String username);
+
+
     Page<User> PageByUser(int page, int size);//对用户数据进行分页
 
 }

@@ -4,9 +4,14 @@ import com.bookindle.boosystem.controller.WeatherMsg;
 import com.bookindle.boosystem.entity.user.User;
 import com.bookindle.boosystem.entity.weather.City;
 import com.bookindle.boosystem.entity.weather.Weather;
+import com.bookindle.boosystem.entity.weather.WordsToMm;
 import com.bookindle.boosystem.mq.SenderToQueue;
+import com.bookindle.boosystem.repository.member.UserRepository;
 import com.bookindle.boosystem.repository.weather.CityRepostory;
 import com.bookindle.boosystem.repository.weather.WeatherRepostory;
+import com.bookindle.boosystem.service.weather.CityService;
+import com.bookindle.boosystem.service.weather.WeatherService;
+import com.bookindle.boosystem.service.weather.WordsToMmService;
 import com.bookindle.boosystem.util.weather.CheckWeatherByCity;
 import com.bookindle.boosystem.util.weather.GetMsgFront;
 import com.bookindle.boosystem.util.weather.SaveWeather;
@@ -21,26 +26,31 @@ import java.util.*;
 @EnableScheduling
 public class SaveWeatherScheduledTasts {
     @Autowired
-    WeatherRepostory weatherRepostory;
+    CityService cityService;
     @Autowired
-    CityRepostory cityRepostory;
+    WeatherService weatherService;
     @Autowired
     SenderToQueue senderToQueue;
+    @Autowired
+    GetMsgFront getMsgFront;
+    @Autowired
+    WordsToMmService wordsToMmService;
+
 
 
 
     /**
      * 更新城市天气
      */
-    @Scheduled(cron = "0 50 18 * * ?")
+    @Scheduled(cron = "0 59 18 * * ?")
     public void addWeathers() {
         System.out.println("获取所有城市天气");
 
 
         // 获取所有城市
-        List<City> cityList = cityRepostory.findAll();
+        List<City> cityList = cityService.findAll();
         // 删除之前天气信息
-        weatherRepostory.deleteAll();
+        weatherService.deleteAll();
 
         // 遍历城市列表
         for (int i=0;i<cityList.size();i++) {
@@ -50,13 +60,11 @@ public class SaveWeatherScheduledTasts {
             //根据城市名称获取当前城市7日天气
             ArrayList<Weather> weathers = saveWeather.saveWeathers(city);
 
-            City cityObject = cityRepostory.findByCity(city);
+            City cityObject = cityService.findByCity(city);
             for (int j=0;j<weathers.size();j++) {
                 Weather weather = weathers.get(j);
                 weather.setCity(cityObject);
-
-
-                weatherRepostory.save(weather);
+                weatherService.save(weather);
             }
         }
     }
@@ -66,6 +74,7 @@ public class SaveWeatherScheduledTasts {
      */
 //    @Scheduled(cron = "0 0/5 * * * ?")
     public void sendUserWeatherMsg(City city) {
+        List<WordsToMm> wordsToMmList = wordsToMmService.findAll();
         System.out.println("发送短信");
         // 获取城市列表
             String res = city.getMsg();
@@ -79,7 +88,7 @@ public class SaveWeatherScheduledTasts {
 
                     // 处理头部消息
                     GetMsgFront getMsgFront = new GetMsgFront();
-                    String newRes = getMsgFront.getMsgFronByCnname(cnName , res);
+                    String newRes = getMsgFront.getMsgFronByCnname(cnName , res, wordsToMmList);
 
                     // 交给中间件分发
                     Map<String, String> contentList = new HashMap<>();
@@ -106,14 +115,14 @@ public class SaveWeatherScheduledTasts {
         dateTomorrow = calendar.getTime();
 
         // 获取城市列表
-        List<City> cityList = cityRepostory.findAll();
+        List<City> cityList = cityService.findAll();
 
         // 遍历城市列表解析天气数据
         CheckWeatherByCity checkWeatherByCity = new CheckWeatherByCity();
         for (City city : cityList) {
 
-             Weather weatherToday = weatherRepostory.findByCityAndDate(city, dateToday);
-             Weather weatherTomorrow = weatherRepostory.findByCityAndDate(city, dateTomorrow);
+             Weather weatherToday = weatherService.findByCityAndDate(city, dateToday);
+             Weather weatherTomorrow = weatherService.findByCityAndDate(city, dateTomorrow);
 
             String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday, weatherTomorrow, city.getCity(),dateTomorrow);
             if (res != null) {
@@ -123,7 +132,7 @@ public class SaveWeatherScheduledTasts {
                 city.setMsg(null);
             }
             // 解析结果持久化
-            cityRepostory.save(city);
+            cityService.save(city);
         }
     }
 }

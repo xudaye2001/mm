@@ -3,16 +3,16 @@ package com.bookindle.boosystem.util.weather;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bookindle.boosystem.entity.weather.City;
 import com.bookindle.boosystem.entity.weather.Weather;
-import com.bookindle.boosystem.repository.weather.CityRepostory;
-import com.bookindle.boosystem.repository.weather.WeatherRepostory;
+import com.bookindle.boosystem.util.Api.HttpRequestWeatherMsg;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
+/**请求天气信息, 解析出最近7天天气;
+ * @author xxf
+ */
 @Component
 @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 public class SaveWeather {

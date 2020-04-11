@@ -1,20 +1,17 @@
 package com.bookindle.boosystem.controller.jwtmember;
 import com.alibaba.fastjson.JSONObject;
-import com.bookindle.boosystem.entity.book.Book;
 import com.bookindle.boosystem.entity.user.User;
 import com.bookindle.boosystem.entity.weather.City;
 import com.bookindle.boosystem.entity.weather.CityList;
 import com.bookindle.boosystem.entity.weather.Weather;
 import com.bookindle.boosystem.mq.SenderToQueue;
-import com.bookindle.boosystem.repository.book.BookRepostory;
-import com.bookindle.boosystem.repository.member.UserRepository;
-import com.bookindle.boosystem.repository.weather.CityListRepostory;
-import com.bookindle.boosystem.repository.weather.CityRepostory;
-import com.bookindle.boosystem.repository.weather.WeatherRepostory;
+
 import com.bookindle.boosystem.service.member.UserService;
 import com.bookindle.boosystem.service.weather.CityListService;
+import com.bookindle.boosystem.service.weather.CityService;
+import com.bookindle.boosystem.service.weather.WeatherService;
 import com.bookindle.boosystem.util.weather.CheckWeatherByCity;
-import org.apache.logging.log4j.message.MapMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,25 +26,19 @@ import java.util.*;
 @RequestMapping("/restful/tasks")
 public class TaskController {
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BookRepostory bookRepostory;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
-    private CityRepostory cityRepostory;
-
-    @Autowired
-    private WeatherRepostory weatherRepostory;
-    @Autowired
     private SenderToQueue senderToQueue;
-
 
     @Autowired
     private CityListService cityListService;
+
+    @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private WeatherService weatherService;
 
 
 
@@ -64,7 +55,7 @@ public class TaskController {
     @PreAuthorize("hasRole('USER')")
     public String newTasks(){
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User userRequest = userRepository.findByName(userName);
+        User userRequest = userService.findByName(userName);
         return userRequest.getCnname();
     }
 
@@ -78,33 +69,19 @@ public class TaskController {
         return "删除了id为:"+id+"的任务";
     }
 
-
-
-    @PreAuthorize("hasRole('USER')")
-    @RequestMapping(value = "/addbook", method = RequestMethod.POST)
-    public void addBook(@RequestBody JSONObject rev) {
-        Book book = JSONObject.parseObject(String.valueOf(rev), Book.class);
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByName(userName);
-        List<User> owner = new ArrayList<>();
-        owner.add(user);
-        book.setOwnners(owner);
-        bookRepostory.save(book);
-    }
-
     @RequestMapping(value = "/deletedcity", method = RequestMethod.POST)
     public void deletedCity(@RequestBody JSONObject cityListNew) {
         // 获取用户名及请求城市
         String originUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         String originCityName = cityListNew.getString("city");;
         // 查找用户User和CIty
-        User originUser = userRepository.findByName(originUserName);
-        City originCity = cityRepostory.findByCity(originCityName);
+        User originUser = userService.findByName(originUserName);
+        City originCity = cityService.findByCity(originCityName);
 
         Set<User> userList = originCity.getUserList();
         userList.remove(originUser);
         originCity.setUserList(userList);
-        cityRepostory.save(originCity);
+        cityService.save(originCity);
 
         // 获取用户城市列表
         Set<City> cityList = originUser.getCityList();
@@ -113,11 +90,11 @@ public class TaskController {
         // 保存新的城市列表
         originUser.setCityList(cityList);
         // 持久化用户
-        userRepository.save(originUser);
+        userService.save(originUser);
 
-        userList = cityRepostory.findByCity(originCityName).getUserList();
+        userList = cityService.findByCity(originCityName).getUserList();
         if (userList.size() == 0) {
-            cityRepostory.delete(originCity);
+            cityService.delete(originCity);
         }
     }
 
@@ -149,22 +126,22 @@ public class TaskController {
                 }
             }
         }
-        User originUser = userRepository.findByName(originUserName);
-        City originCity = cityRepostory.findByCity(originCityName);
+        User originUser = userService.findByName(originUserName);
+        City originCity = cityService.findByCity(originCityName);
             // 增加城市
             if (originCity !=null) {
                 // 给User增加城市
                 Set<City> cityList = new HashSet<>();
                 cityList.add(originCity);
                 originUser.setCityList(cityList);
-                userRepository.save(originUser);
+                userService.save(originUser);
 
                 // 给城市增加user
                 Set<User> userList =  originCity.getUserList();
                 userList.add(originUser);
                 originCity.setUserList(userList);
 
-                cityRepostory.save(originCity);
+                cityService.save(originCity);
 
             }else {
                 // 增加城市
@@ -174,20 +151,20 @@ public class TaskController {
                 Set<User> userList = new HashSet<>();
                 userList.add(originUser);
                 originCity.setUserList(userList);
-                cityRepostory.save(originCity);
+                cityService.save(originCity);
 
                 // 保存用户
                 Set<City> cityList = new HashSet<>();
                 cityList = originUser.getCityList();
                 cityList.add(originCity);
                 originUser.setCityList(cityList);
-                userRepository.save(originUser);
+                userService.save(originUser);
             }
     }
 
     @RequestMapping(value = "/getcitylist", method = RequestMethod.POST)
     public List<String> getCityList() {
-        User user = userService.findUserByName(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userService.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
         Set<City> userCityList = user.getCityList();
         Iterator<City> cityIterator = userCityList.iterator();
         List<String> cityList = new ArrayList<>();
@@ -209,12 +186,12 @@ public class TaskController {
         dateTomorrow = calendar.getTime();
 
         // 获取城市列表
-        List<City> cityList = cityRepostory.findAll();
+        List<City> cityList = cityService.findAll();
 
         CheckWeatherByCity checkWeatherByCity = new CheckWeatherByCity();
         for(City city : cityList) {
-            Weather weatherToday =  weatherRepostory.findByCityAndDate(city, dateToday);
-            Weather weatherTomorrow =  weatherRepostory.findByCityAndDate(city, dateTomorrow);
+            Weather weatherToday =  weatherService.findByCityAndDate(city, dateToday);
+            Weather weatherTomorrow =  weatherService.findByCityAndDate(city, dateTomorrow);
             String res = checkWeatherByCity.checkWeatherAndSendRabbitMQ(weatherToday,weatherTomorrow,city.getCity(), dateTomorrow);
             Set<User> userList =  city.getUserList();
             if (res !=null) {
@@ -222,8 +199,8 @@ public class TaskController {
             }else {
                 city.setMsg(null);
             }
-            cityRepostory.save(city);
-            city = cityRepostory.findByCity(city.getCity());
+            cityService.save(city);
+            city = cityService.findByCity(city.getCity());
             res = city.getMsg();
             if(res != null) {
                 for (User user:userList) {

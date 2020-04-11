@@ -21,12 +21,12 @@ public interface WeatherRepostory extends JpaRepository<Weather, Long>, JpaSpeci
     void deleteAllByCity(City city);
     Weather findByCity(String city);
 
-    @Modifying
-    @Transactional
-    @Query("update Book set view = :view where id =:id")
-    int updateBookViewById(
-            @Param("view") long view, @Param("id")long id
-    );
+//    @Modifying
+//    @Transactional
+//    @Query("update Book set view = :view where id =:id")
+//    int updateBookViewById(
+//            @Param("view") long view, @Param("id")long id
+//    );
 
 //    @Transactional
 //    @Modifying

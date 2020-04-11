@@ -14,5 +14,5 @@ import org.springframework.cache.annotation.Cacheable;
 public interface CityRepostory extends JpaRepository<City, Long>, JpaSpecificationExecutor<City> {
     City findByCity(String city);
 
-    List<City> findAll();
+//    List<City> findAll();
 }
